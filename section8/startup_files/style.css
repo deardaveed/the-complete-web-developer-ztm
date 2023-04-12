@@ -1,3 +1,10 @@
+body {
+background: url(header.jpg) no-repeat center center;
+background-size: cover;
+/*justify-content: ;*/
+font-family: 'Monserrat', sans-serif;
+}
+
 body,
 html {
   width: 100%;
