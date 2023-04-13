@@ -15,8 +15,23 @@ if (Number(age) < 18) {
 //1. Make the above code have a function called checkDriverAge(). Whenever you call this function, you will get prompted for age. Use Function Declaration to create this function.
 // Notice the benefit in having checkDriverAge() instead of copying and pasting the function everytime?
 
+function checkDriverAge() {
+    prompt("what's your age?");
+}
+checkDriverAge();
+
 //2. Create another function that does the same thing, called checkDriverAge2() using Function Expression.
+
+var checkDriverAge = function() {
+    prompt("what's your age?");
+}
+checkDriverAge();
 
 //BONUS: Instead of using the prompt. Now, only use console.log and make the checkDriverAge() function accept an argument of age, so that if you enter:
 checkDriverAge(92);
 it returns "Powering On. Enjoy the ride!"
+
+function checkDriverAge(age) {
+    return console.log("Powering on!!!!");
+}
+checkDriverAge(2);
