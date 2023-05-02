@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+aimport React, { Component } from 'react';
 // import Particles from 'react-particles-js';
 import ParticlesBg from 'particles-bg'
 import Clarifai from 'clarifai';
