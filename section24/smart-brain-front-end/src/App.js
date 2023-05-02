@@ -10,14 +10,16 @@ import ParticlesBg from 'particles-bg';
 class App extends Component {
   render () {
     return (
-      <div className="App">
-        <ParticlesBg type="circle" bg={true} />
-        <Navigation />
-        <Logo />
-        <Rank />
-        <ImageLinkURL />
-{/*        <FacePattern />*/}
-      </div>
+      <>
+        <div className="App">
+          <ParticlesBg color="#FFFFFF" num={80} type="cobweb" bg={true} />
+          <Navigation />
+          <Logo />
+          <Rank />
+          <ImageLinkURL />
+  {/*        <FacePattern />*/}
+        </div>
+      </>
     );  
   }
 } 
