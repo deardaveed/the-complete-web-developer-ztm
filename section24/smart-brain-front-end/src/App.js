@@ -21,7 +21,7 @@ const returnClarifaiRequestOptions = (imgURL) => {
     // const MODEL_ID = 'face-detection';
     // OPTIONAL:
     // const MODEL_VERSION_ID = 'aa7f35c01e0642fda5cf400f543e7c40';    
-    const IMAGE_URL = 'imgURL';
+    const IMAGE_URL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Jennie_Porsche_A4_2022.jpg/440px-Jennie_Porsche_A4_2022.jpg';
 
     ///////////////////////////////////////////////////////////////////////////////////
     // YOU DO NOT NEED TO CHANGE ANYTHING BELOW THIS LINE TO RUN THIS EXAMPLE
