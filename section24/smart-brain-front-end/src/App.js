@@ -21,7 +21,7 @@ const returnClarifaiRequestOptions = (imgURL) => {
     // const MODEL_ID = 'face-detection';
     // OPTIONAL:
     // const MODEL_VERSION_ID = 'aa7f35c01e0642fda5cf400f543e7c40';    
-    const IMAGE_URL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Jennie_Porsche_A4_2022.jpg/440px-Jennie_Porsche_A4_2022.jpg';
+    // const IMAGE_URL = imgURL
 
     ///////////////////////////////////////////////////////////////////////////////////
     // YOU DO NOT NEED TO CHANGE ANYTHING BELOW THIS LINE TO RUN THIS EXAMPLE
@@ -35,7 +35,7 @@ const returnClarifaiRequestOptions = (imgURL) => {
         "inputs": [{
             "data": {
                 "image": {
-                    "url": IMAGE_URL
+                    "url": imgURL
                 }
             }
         }]
@@ -50,7 +50,7 @@ const returnClarifaiRequestOptions = (imgURL) => {
         body: raw
     };
 
-    return requestOptions
+    return requestOptions;
 }
 
 class App extends Component {
@@ -63,13 +63,16 @@ class App extends Component {
     }
 
     onInputChange = (event) => {
-        console.log(event.target.value);
+            this.setState({ input: event.target.value });
+        // console.log(event.target.value);
     }
 
     onButtonSubmit = () => {
         // this.setState({imageUrl: this.state.input});
         console.log('click');
-        fetch("https://api.clarifai.com/v2/models/" + 'face-detection' + "/outputs", returnClarifaiRequestOptions(this.state.input))
+        const reqOptions = returnClarifaiRequestOptions(this.state.input);
+        console.log("before fetch call", reqOptions);
+        fetch("https://api.clarifai.com/v2/models/" + 'face-detection' + "/outputs", reqOptions)
             .then(response => response.json())
             .then(result => console.log(result))
             .catch(error => console.log('error', error));
