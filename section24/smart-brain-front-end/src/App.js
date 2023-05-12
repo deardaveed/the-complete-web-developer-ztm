@@ -58,7 +58,7 @@ class App extends Component {
         super()
         this.state = {
             input: '',
-            imageUrl: '',
+            // imageUrl: '',
         }
     }
 
@@ -67,8 +67,8 @@ class App extends Component {
     }
 
     onButtonSubmit = () => {
-        this.setState({imageUrl: this.state.input});
-        // console.log('click');
+        // this.setState({imageUrl: this.state.input});
+        console.log('click');
         fetch("https://api.clarifai.com/v2/models/" + 'face-detection' + "/outputs", returnClarifaiRequestOptions(this.state.input))
             .then(response => response.json())
             .then(result => console.log(result))
@@ -76,17 +76,15 @@ class App extends Component {
     }
 
     render() {
-        return ( <
-            >
+        return (
             <div className="App">
-          <ParticlesBg color="#FFFFFF" num={80} type="cobweb" bg={true} />
-          <Navigation />
-          <Logo />
-          <Rank />
-          <ImageLinkURL onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
-{/*          <FacePattern />*/}
-        </div> <
-            />
+                <ParticlesBg color="#FFFFFF" num={80} type="cobweb" bg={true} />
+                <Navigation />
+                <Logo />
+                <Rank />
+                <ImageLinkURL onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
+                {/*<FacePattern />*/}
+            </div>
         );
     }
 }
