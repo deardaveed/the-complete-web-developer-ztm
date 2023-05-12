@@ -13,70 +13,72 @@ import ParticlesBg from 'particles-bg';
 // const app = new Clarifai.App({
 //  apiKey: ''
 // });
+const returnClarifaiRequestOptions = (imgURL) => {
+    const PAT = 'a7f0fc84f6424161a0a613e8fbafde68';
+    const USER_ID = 't4tjvl7769yx';
+    const APP_ID = 'ztm';
+    // Change these to whatever model and image URL you want to use
+    // const MODEL_ID = 'face-detection';
+    // OPTIONAL:
+    // const MODEL_VERSION_ID = 'aa7f35c01e0642fda5cf400f543e7c40';    
+    const IMAGE_URL = 'imgURL';
 
-class App extends Component {
-  constructor() {
-    super()
-    this.state = {
-      input: ''
-    }
-  }
+    ///////////////////////////////////////////////////////////////////////////////////
+    // YOU DO NOT NEED TO CHANGE ANYTHING BELOW THIS LINE TO RUN THIS EXAMPLE
+    ///////////////////////////////////////////////////////////////////////////////////
 
-  onInputChange = (event) => {
-    console.log(event.target.value);
-  }
-
-  onButtonSubmit = () => {
-    console.log('click');
-    const returnClarifaiRequestOptions = (imageURL) => {
-      const PAT = 'a7f0fc84f6424161a0a613e8fbafde68';
-      const USER_ID = 't4tjvl7769yx';
-      const APP_ID = 'ztm';
-      // Change these to whatever model and image URL you want to use
-      const MODEL_ID = 'face-detection';
-      // OPTIONAL:
-      // const MODEL_VERSION_ID = 'aa7f35c01e0642fda5cf400f543e7c40';    
-      const IMAGE_URL = 'imageURL';
-
-      ///////////////////////////////////////////////////////////////////////////////////
-      // YOU DO NOT NEED TO CHANGE ANYTHING BELOW THIS LINE TO RUN THIS EXAMPLE
-      ///////////////////////////////////////////////////////////////////////////////////
-
-      const raw = JSON.stringify({
+    const raw = JSON.stringify({
         "user_app_id": {
-          "user_id": USER_ID,
-          "app_id": APP_ID
+            "user_id": USER_ID,
+            "app_id": APP_ID
         },
         "inputs": [{
-          "data": {
-            "image": {
-              "url": IMAGE_URL
+            "data": {
+                "image": {
+                    "url": IMAGE_URL
+                }
             }
-          }
         }]
-      });
+    });
 
-      const requestOptions = {
+    const requestOptions = {
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Key ' + PAT
+            'Accept': 'application/json',
+            'Authorization': 'Key ' + PAT
         },
         body: raw
-      };
+    };
 
-      return requestOptions;
+    return requestOptions
+}
+
+class App extends Component {
+    constructor() {
+        super()
+        this.state = {
+            input: '',
+            imageUrl: '',
+        }
     }
-    fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/outputs", requestOptions)
-      .then(response => response.text())
-      .then(result => console.log(result))
-      .catch(error => console.log('error', error));
-  }
 
-  render() {
-    return ( <
-      >
-      <div className="App">
+    onInputChange = (event) => {
+        console.log(event.target.value);
+    }
+
+    onButtonSubmit = () => {
+        this.setState({imageUrl: this.state.input});
+        // console.log('click');
+        fetch("https://api.clarifai.com/v2/models/" + 'face-detection' + "/outputs", returnClarifaiRequestOptions(this.state.input))
+            .then(response => response.json())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+    }
+
+    render() {
+        return ( <
+            >
+            <div className="App">
           <ParticlesBg color="#FFFFFF" num={80} type="cobweb" bg={true} />
           <Navigation />
           <Logo />
@@ -84,9 +86,9 @@ class App extends Component {
           <ImageLinkURL onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
 {/*          <FacePattern />*/}
         </div> <
-      />
-    );
-  }
+            />
+        );
+    }
 }
 
 export default App;
