@@ -6,26 +6,12 @@ import ImageLinkURL from './components/ImageLinkURL/ImageLinkURL';
 import Rank from './components/Rank/Rank';
 // import FacePattern from './components/FacePattern/FacePattern';
 import ParticlesBg from 'particles-bg';
-// NO LONGER needed
-// import Clarifai from 'clarifai';
 
-// DEPRECATED in favor of PAT
-// const app = new Clarifai.App({
-//  apiKey: ''
-// });
 const returnClarifaiRequestOptions = (imgURL) => {
     const PAT = 'a7f0fc84f6424161a0a613e8fbafde68';
     const USER_ID = 't4tjvl7769yx';
     const APP_ID = 'ztm';
-    // Change these to whatever model and image URL you want to use
-    // const MODEL_ID = 'face-detection';
-    // OPTIONAL:
-    // const MODEL_VERSION_ID = 'aa7f35c01e0642fda5cf400f543e7c40';    
-    // const IMAGE_URL = imgURL
-
-    ///////////////////////////////////////////////////////////////////////////////////
-    // YOU DO NOT NEED TO CHANGE ANYTHING BELOW THIS LINE TO RUN THIS EXAMPLE
-    ///////////////////////////////////////////////////////////////////////////////////
+    const IMAGE_URL = imgURL
 
     const raw = JSON.stringify({
         "user_app_id": {
@@ -35,7 +21,7 @@ const returnClarifaiRequestOptions = (imgURL) => {
         "inputs": [{
             "data": {
                 "image": {
-                    "url": imgURL
+                    "url": IMAGE_URL
                 }
             }
         }]
@@ -64,7 +50,6 @@ class App extends Component {
 
     onInputChange = (event) => {
             this.setState({ input: event.target.value });
-        // console.log(event.target.value);
     }
 
     onButtonSubmit = () => {
