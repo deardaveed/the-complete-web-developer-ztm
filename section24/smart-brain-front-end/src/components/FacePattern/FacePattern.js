@@ -7,11 +7,10 @@ const app = new Clarifai.App({
 
 const FacePattern = () => {
   return (
-    <>
-      <div>
+      <div className='center'>
+        <img alt='' src={'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/440px-Image_created_with_a_mobile_phone.png'}/>
         
       </div>
-    </>
     )
 }
 

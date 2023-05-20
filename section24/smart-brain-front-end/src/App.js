@@ -4,7 +4,7 @@ import Navigation from './components/Navigation/Navigation';
 import Logo from './components/Logo/Logo';
 import ImageLinkURL from './components/ImageLinkURL/ImageLinkURL';
 import Rank from './components/Rank/Rank';
-// import FacePattern from './components/FacePattern/FacePattern';
+import FacePattern from './components/FacePattern/FacePattern';
 import ParticlesBg from 'particles-bg';
 
 const returnClarifaiRequestOptions = (imgURL) => {
@@ -71,7 +71,7 @@ class App extends Component {
                 <Logo />
                 <Rank />
                 <ImageLinkURL onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
-                {/*<FacePattern />*/}
+                <FacePattern />
             </div>
         );
     }
