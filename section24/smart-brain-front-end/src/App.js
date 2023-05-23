@@ -44,7 +44,7 @@ class App extends Component {
         super()
         this.state = {
             input: '',
-            // imageUrl: '',
+            imageUrl: '',
         }
     }
 
@@ -53,13 +53,11 @@ class App extends Component {
     }
 
     onButtonSubmit = () => {
-        // this.setState({imageUrl: this.state.input});
-        console.log('click');
+        this.setState({imageUrl: this.state.input});
         const reqOptions = returnClarifaiRequestOptions(this.state.input);
-        console.log("before fetch call", reqOptions);
         fetch("https://api.clarifai.com/v2/models/" + 'face-detection' + "/outputs", reqOptions)
             .then(response => response.json())
-            .then(result => console.log(result))
+            .then(result => console.log(result.outputs[0].data.regions[0].region_info.bounding_box))
             .catch(error => console.log('error', error));
     }
 
@@ -71,7 +69,7 @@ class App extends Component {
                 <Logo />
                 <Rank />
                 <ImageLinkURL onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
-                <FacePattern />
+                <FacePattern imageUrl={this.state.imageUrl} />
             </div>
         );
     }
