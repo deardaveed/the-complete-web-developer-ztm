@@ -45,7 +45,16 @@ class App extends Component {
         this.state = {
             input: '',
             imageUrl: '',
+            box: {}
         }
+    }
+
+    calculateFaceDimensions = (data) => {
+        const clarifaiBounds = data.outputs[0].data.regions[0].region_info.bounding_box
+        const image = document.getElementById('input-image');
+        const width = Number(image.width);
+        const height = Number(image.height);
+        console.log(width, height);
     }
 
     onInputChange = (event) => {
@@ -57,7 +66,7 @@ class App extends Component {
         const reqOptions = returnClarifaiRequestOptions(this.state.input);
         fetch("https://api.clarifai.com/v2/models/" + 'face-detection' + "/outputs", reqOptions)
             .then(response => response.json())
-            .then(result => console.log(result.outputs[0].data.regions[0].region_info.bounding_box))
+            .then(result => this.calculateFaceDimensions(result))
             .catch(error => console.log('error', error));
     }
 
