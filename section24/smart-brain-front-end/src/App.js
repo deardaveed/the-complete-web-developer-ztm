@@ -5,6 +5,8 @@ import Logo from './components/Logo/Logo';
 import ImageLinkURL from './components/ImageLinkURL/ImageLinkURL';
 import Rank from './components/Rank/Rank';
 import FacePattern from './components/FacePattern/FacePattern';
+import SignIn from './components/SignIn/SignIn';
+import Register from './components/Register/Register';
 import ParticlesBg from 'particles-bg';
 
 const returnClarifaiRequestOptions = (imgURL) => {
@@ -45,7 +47,9 @@ class App extends Component {
     this.state = {
       input: '',
       imageUrl: '',
-      box: {}
+      box: {},
+      route: 'signin',
+      isSignedIn: false
     }
   }
 
@@ -64,7 +68,6 @@ class App extends Component {
   }
 
   drawFaceBox = (dimensions) => {
-    console.log(dimensions);
     this.setState({ box: dimensions });
   }
 
@@ -81,16 +84,34 @@ class App extends Component {
       .catch(error => console.log('error', error));
   }
 
+  onRouteChange = (routeToggle) => {
+    if (routeToggle === 'signout') {
+      this.setState({ isSignedIn: false })
+    } else if (routeToggle === 'home') {
+      this.setState({ isSignedIn: true })
+    }
+    this.setState({ route: routeToggle });
+  }
+
   render() {
+    const { isSignedIn, imageUrl, route, box} = this.state;
     return (
       <div className="App">
-                <ParticlesBg color="#FFFFFF" num={80} type="cobweb" bg={true} />
-                <Navigation />
-                <Logo />
-                <Rank />
-                <ImageLinkURL onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
-                <FacePattern box={this.state.box} imageUrl={this.state.imageUrl} />
-            </div>
+        <ParticlesBg color="#FFFFFF" num={80} type="cobweb" bg={true} />
+        <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
+        { route === 'home' 
+        ? <div>
+            <Logo /> 
+            <Rank />
+            <ImageLinkURL onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
+            <FacePattern box={box} imageUrl={imageUrl} />
+          </div>
+        : ( route === 'signin' 
+            ? <SignIn onRouteChange={this.onRouteChange} /> 
+            : <Register onRouteChange={this.onRouteChange} /> 
+          )
+        }
+      </div>
     );
   }
 }
