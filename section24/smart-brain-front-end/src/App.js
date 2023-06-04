@@ -49,10 +49,26 @@ class App extends Component {
       imageUrl: '',
       box: {},
       route: 'signin',
-      isSignedIn: false
+      isSignedIn: false,
+      user: {
+        id: '',
+        name: '',
+        email: '',
+        entries: 0,
+        joined: ''
+      }
     }
   }
 
+  loadUser = (data) => {
+    this.setState({user: {
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      entries: data.entries,
+      joined: data.joined
+    }})
+  }
   // componentDidMount() {
   //   fetch('http://localhost:3000/')
   //   .then(response => response.json())
@@ -100,7 +116,7 @@ class App extends Component {
   }
 
   render() {
-    const { isSignedIn, imageUrl, route, box} = this.state;
+    const { isSignedIn, imageUrl, route, box } = this.state;
     return (
       <div className="App">
         <ParticlesBg color="#FFFFFF" num={80} type="cobweb" bg={true} />
@@ -114,7 +130,7 @@ class App extends Component {
           </div>
         : ( route === 'signin' 
             ? <SignIn onRouteChange={this.onRouteChange} /> 
-            : <Register onRouteChange={this.onRouteChange} /> 
+            : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} /> 
           )
         }
       </div>
