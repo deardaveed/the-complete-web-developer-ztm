@@ -61,13 +61,15 @@ class App extends Component {
   }
 
   loadUser = (data) => {
-    this.setState({user: {
-      id: data.id,
-      name: data.name,
-      email: data.email,
-      entries: data.entries,
-      joined: data.joined
-    }})
+    this.setState({
+      user: {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        entries: data.entries,
+        joined: data.joined
+      }
+    })
   }
   // componentDidMount() {
   //   fetch('http://localhost:3000/')
@@ -102,7 +104,22 @@ class App extends Component {
     const reqOptions = returnClarifaiRequestOptions(this.state.input);
     fetch("https://api.clarifai.com/v2/models/" + 'face-detection' + "/outputs", reqOptions)
       .then(response => response.json())
-      .then(response => this.drawFaceBox(this.calculateFaceDimensions(response)))
+      .then(response => {
+        if (response) {
+          fetch('http://localhost:3000/image', {
+              method: 'put',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                id: this.state.user.id
+              })
+            })
+            .then(response => response.json())
+            .then(count => {
+              this.setState(Object.assign(this.state.user, { entries: count }))
+            })
+        }
+        this.drawFaceBox(this.calculateFaceDimensions(response))
+      })
       .catch(error => console.log('error', error));
   }
 
@@ -124,12 +141,12 @@ class App extends Component {
         { route === 'home' 
         ? <div>
             <Logo /> 
-            <Rank />
+            <Rank name={this.state.user.name} entries={this.state.user.entries} />
             <ImageLinkURL onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
             <FacePattern box={box} imageUrl={imageUrl} />
           </div>
         : ( route === 'signin' 
-            ? <SignIn onRouteChange={this.onRouteChange} /> 
+            ? <SignIn loadUser={this.loadUser} onRouteChange={this.onRouteChange} /> 
             : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} /> 
           )
         }
