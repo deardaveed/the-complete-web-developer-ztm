@@ -24,79 +24,105 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-const database = {
-  users: [{
-      id: '123',
-      name: 'John',
-      email: 'john@gmail.com',
-      password: 'cookies',
-      entries: 0,
-      joined: new Date()
-    },
-    {
-      id: '124',
-      name: 'Sally',
-      email: 'sally@gmail.com',
-      password: 'bananas',
-      entries: 0,
-      joined: new Date()
-    }
-  ],
-  login: [{
-    id: '987',
-    hash: '',
-    email: 'john@gmail.com'
-  }]
-}
+// const database = {
+//   users: [{
+//       id: '123',
+//       name: 'John',
+//       email: 'john@gmail.com',
+//       password: 'cookies',
+//       entries: 0,
+//       joined: new Date()
+//     },
+//     {
+//       id: '124',
+//       name: 'Sally',
+//       email: 'sally@gmail.com',
+//       password: 'bananas',
+//       entries: 0,
+//       joined: new Date()
+//     }
+//   ],
+//   login: [{
+//     id: '987',
+//     hash: '',
+//     email: 'john@gmail.com'
+//   }]
+// }
 
 app.get('/', (req, res) => {
   res.send(database.users);
 })
 
 app.post('/signin', (req, res) => {
-  if (req.body.email === database.users[0].email && req.body.password === database.users[0].password) {
-    res.json(database.users[0]);
-  } else {
-    res.status(400).json('error logging in');
-  }
+  db.select('email', 'hash').from('login')
+  .where('email', '=', req.body.email) 
+  .then(data => {
+    const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
+    if (isValid) {
+      return (
+        db.select('*').from('users')
+        .where('email', '=', req.body.email)
+        .then( user => res.json(user[0]))
+      )
+    } else {
+      res.status(400).json('wrong credentials')
+    }
+   }).catch(err => res.status(400).json('unable to get user'))
+  .catch(err => res.status(400).json('wrong credentials'))
+  // if (req.body.email === database.users[0].email && req.body.password === database.users[0].password) {
+  //   res.json(database.users[0]);
+  // } else {
+  //   res.status(400).json('error logging in');
+  // }
 })
 
 app.post('/register', (req, res) => {
   const { email, name, password } = req.body;
-  db('users')
-    .returning('*')
-    .insert({
-      email: email,
-      name: name,
-      joined: new Date()
-    }).then(user => {
-      res.json(user[0]);
-    }).catch(err => res.status(400).json('unable to register'));
+  const hash = bcrypt.hashSync(password);
+
+  db.transaction(trx => {
+    trx.insert({
+      hash: hash,
+      email: email
+    }).into('login')
+      .returning('email')
+      .then(loginEmail => {
+        return trx('users')
+          .returning('*')
+          .insert({
+            email: loginEmail[0].email,
+            name: name,
+            joined: new Date()
+          }).then(user => res.json(user[0]))
+      })
+      .then(trx.commit)
+      .catch(trx.rollback)
+  }).catch(err => res.status(400).json('unable to register'));
 })
 
 app.get('/profile/:id', (req, res) => {
   const { id } = req.params;
   // let found = false;
   db.select('*').from('users').where({
-    id: id
-  }).then(user => {
-    if (user.length) {
-      res.json(user[0]);
-    } else {
-      res.status(400).json('user not found');
-    }
-  })
+      id: id
+    }).then(user => {
+      if (user.length) {
+        res.json(user[0]);
+      } else {
+        res.status(400).json('user not found');
+      }
+    })
     .catch(err => res.status(400).json('error getting user'))
-  })
-  // database.users.forEach(user => {
-  //   if (user.id === id) {
-  //     found = true;
-  //     return res.json(user);
-  //   }
-  // })
-  // if (!found) {
-  //   res.status(400).json('user not found');
-  // }
+})
+// database.users.forEach(user => {
+//   if (user.id === id) {
+//     found = true;
+//     return res.json(user);
+//   }
+// })
+// if (!found) {
+//   res.status(400).json('user not found');
+// }
 
 
 app.put('/image', (req, res) => {
@@ -105,7 +131,7 @@ app.put('/image', (req, res) => {
     .increment('entries', 1)
     .returning('entries')
     .then(entries => {
-      res.json(entries[0]);
+      res.json(entries[0].entries);
     })
     .catch(err => {
       res.status(400).json('unable to get entries')
