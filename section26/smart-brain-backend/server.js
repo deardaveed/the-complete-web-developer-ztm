@@ -5,6 +5,8 @@ const cors = require('cors');
 const knex = require('knex');
 const register = require('./controllers/register');
 const signIn = require('./controllers/signin')
+const profile = require('./controllers/profile')
+const image = require('./controllers/image')
 
 const db = knex({
   client: 'pg',
@@ -58,24 +60,12 @@ app.get('/', (req, res) => {
 });
 })
 
-app.post('/signin', (req, res) => { signIn.handleSignIn(req, res, db, bcrypt)} )
-
+//alternate way below
+app.post('/signin', signIn.handleSignIn(db, bcrypt))
+// 'easier' way below
+// app.post('/signin', (req, res) => { signIn.handleSignIn(req, res, db, bcrypt)} )
 app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) })
-
-app.get('/profile/:id', (req, res) => {
-  const { id } = req.params;
-  // let found = false;
-  db.select('*').from('users').where({
-      id: id
-    }).then(user => {
-      if (user.length) {
-        res.json(user[0]);
-      } else {
-        res.status(400).json('user not found');
-      }
-    })
-    .catch(err => res.status(400).json('error getting user'))
-})
+app.get('/profile/:id', (req, res) => { profile.handleProfileGet(req, res, db)} )
 // database.users.forEach(user => {
 //   if (user.id === id) {
 //     found = true;
@@ -85,31 +75,7 @@ app.get('/profile/:id', (req, res) => {
 // if (!found) {
 //   res.status(400).json('user not found');
 // }
-
-
-app.put('/image', (req, res) => {
-  const { id } = req.body;
-  db('users').where('id', '=', id)
-    .increment('entries', 1)
-    .returning('entries')
-    .then(entries => {
-      res.json(entries[0].entries);
-    })
-    .catch(err => {
-      res.status(400).json('unable to get entries')
-    })
-  // let found = false;
-  // database.users.forEach(user => {
-  //   if (user.id === id) {
-  //     found = true;
-  //     user.entries++;
-  //     return res.json(user.entries);
-  //   }
-  // })
-  // if (!found) {
-  //   res.status(400).json('user not found');
-  // }
-})
+app.put('/image', (req, res) => { image.handleImage(req, res, db)} )
 
 // bcrypt.hash("bacon", null, null, function(err, hash) {
 //     // Store hash in your password DB.
