@@ -60,9 +60,9 @@ app.get('/', (req, res) => {
 });
 })
 
-//alternate way below
+// 1) one way below
 app.post('/signin', signIn.handleSignIn(db, bcrypt))
-// 'easier' way below
+// 2) another 'easier' way below
 // app.post('/signin', (req, res) => { signIn.handleSignIn(req, res, db, bcrypt)} )
 app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) })
 app.get('/profile/:id', (req, res) => { profile.handleProfileGet(req, res, db)} )
